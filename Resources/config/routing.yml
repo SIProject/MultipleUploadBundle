@@ -1,0 +1,3 @@
+sip_multiple_upload:
+    pattern:  /multiple_upload/{sub_dir}
+    defaults: { _controller: SIPMultipleUploadBundle:Upload:upload, sub_dir: '' }

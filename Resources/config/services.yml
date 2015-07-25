@@ -1,0 +1,9 @@
+parameters:
+    sip.form.file.root_dir: %kernel.root_dir%/../web
+
+services:
+    sip.form.jquery.type.file:
+        class: SIP\MultipleUploadBundle\Form\Type\FileType
+        tags:
+            - { name: form.type, alias: multiple_upload_file }
+        arguments: [%sip.form.file.root_dir%, %sip_multiple_upload.upload_folder%]

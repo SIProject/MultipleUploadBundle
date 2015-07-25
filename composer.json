@@ -1,0 +1,12 @@
+{
+    "name": "sip/multiple-upload-bundle",
+    "type": "sip-bundle",
+    "description": "Multiple Upload Bundle",
+    "require": {
+        "genemu/form-bundle": "2.1.*"
+    },
+    "autoload": {
+        "psr-0": { "SIP\\MultipleUploadBundle": "" }
+    },
+    "target-dir": "SIP/MultipleUploadBundle"
+}

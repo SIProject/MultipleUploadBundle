@@ -1,0 +1,66 @@
+{% block multiple_upload_file_widget %}
+    {% spaceless %}
+        {{ block("hidden_widget") }}
+        <div class="container">
+            <div id="fileupload">
+                <noscript><input type="hidden" name="redirect" value="http://blueimp.github.com/jQuery-File-Upload/"></noscript>
+                <div class="row fileupload-buttonbar">
+                    <div class="span7">
+                        <span class="btn btn-success btn-sm btn-outline fileinput-button">
+                            <i class="fa fa-plus-circle"></i>
+                            <span>{{'Add files'|trans}}</span>
+                            <input type="file" name="files[]" multiple>
+                        </span>
+                        <button type="submit" class="btn btn-primary btn-sm btn-outline start">
+                            <i class="fa fa-cloud-upload"></i>
+                            <span>{{'Start upload'|trans}}</span>
+                        </button>
+                        <button type="reset" class="btn btn-warning btn-sm btn-outline cancel">
+                            <i class="fa fa-minus-circle"></i>
+                            <span>{{'Cancel upload'|trans}}</span>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm btn-outline delete">
+                            <i class="fa fa-trash-o"></i>
+                            <span>{{'Delete files'|trans}}</span>
+                        </button>
+                        <input type="checkbox" class="toggle">
+                    </div>
+                    <div class="span5 fileupload-progress fade">
+                        <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                            <div class="bar" style="width:0%;"></div>
+                        </div>
+                        <div class="progress-extended">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="fileupload-loading"></div>
+                <br>
+                <table role="presentation" class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody></table>
+            </div>
+        </div>
+        <div id="modal-gallery" class="modal modal-gallery hide fade" data-filter=":odd" tabindex="-1">
+            <div class="modal-header">
+                <a class="close" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title"></h3>
+            </div>
+            <div class="modal-body"><div class="modal-image"></div></div>
+            <div class="modal-footer">
+                <a class="btn modal-download" target="_blank">
+                    <i class="icon-download"></i>
+                    <span>{{'Download'|trans}}</span>
+                </a>
+                <a class="btn btn-success modal-play modal-slideshow" data-slideshow="5000">
+                    <i class="icon-play icon-white"></i>
+                    <span>{{'Slideshow'|trans}}</span>
+                </a>
+                <a class="btn btn-info modal-prev">
+                    <i class="icon-arrow-left icon-white"></i>
+                    <span>{{'Previous'|trans}}</span>
+                </a>
+                <a class="btn btn-primary modal-next">
+                    <span>{{'Next'|trans}}</span>
+                    <i class="icon-arrow-right icon-white"></i>
+                </a>
+            </div>
+        </div>
+    {% endspaceless %}
+{% endblock %}

@@ -1,0 +1,154 @@
+{% block multiple_upload_file_javascript %}
+    {% spaceless %}
+        {% raw %}
+            <script id="template-upload" type="text/x-tmpl">
+                {% for (var i=0, file; file=o.files[i]; i++) { %}
+                <tr class="template-upload fade">
+                    <td class="preview"><span class="fade"></span></td>
+                    <td class="name"><span>{%=file.name%}</span></td>
+                    <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+                    {% if (file.error) { %}
+                    <td class="error" colspan="2"><span class="label label-important">Error</span> {%=file.error%}</td>
+                    {% } else if (o.files.valid && !i) { %}
+                    <td>
+                        <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar" style="width:0%;"></div></div>
+                    </td>
+                    <td class="start">{% if (!o.options.autoUpload) { %}
+                        <button class="btn btn-primary btn-sm btn-outline">
+                            <i class="icon-upload icon-white"></i>
+                            <span>{% endraw %}{{'Start'|trans}}{% raw %}</span>
+                        </button>
+                        {% } %}</td>
+                    {% } else { %}
+                    <td colspan="2"></td>
+                    {% } %}
+                    <td class="cancel">{% if (!i) { %}
+                        <button class="btn btn-warning btn-sm btn-outline">
+                            <i class="icon-ban-circle icon-white"></i>
+                            <span>{% endraw %}{{'Cancel'|trans}}{% raw %}</span>
+                        </button>
+                        {% } %}</td>
+                </tr>
+                {% } %}
+            </script>
+            <!-- The template to display files available for download -->
+            <script id="template-download" type="text/x-tmpl">
+                {% for (var i=0, file; file=o.files[i]; i++) { %}
+                <tr class="template-download fade">
+                    {% if (file.error) { %}
+                    <td></td>
+                    <td class="name"><span>{%=file.name%}</span></td>
+                    <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+                    <td class="error" colspan="2"><span class="label label-important">Error</span> {%=file.error%}</td>
+                    {% } else { %}
+                    <td class="preview">{% if (file.thumbnail_url) { %}
+                        <a href="{%=file.url%}" title="{%=file.name%}" rel="gallery" download="{%=file.name%}"><img src="{%=file.thumbnail_url%}"></a>
+                        {% } %}</td>
+                    <td class="name">
+                        <a href="{%=file.url%}" title="{%=file.name%}" rel="{%=file.thumbnail_url&&'gallery'%}" download="{%=file.name%}">{%=file.name%}</a>
+                    </td>
+                    <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+                    <td colspan="2"></td>
+                    {% } %}
+                    <td class="delete">
+                        <button class="btn btn-danger btn-sm btn-outline" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}"{% if (file.delete_with_credentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
+                        <i class="icon-trash icon-white"></i>
+                        <span>{% endraw %}{{'Delete files'|trans}}{% raw %}</span>
+                        </button>
+                        <input type="checkbox" name="delete" value="1">
+                    </td>
+                </tr>
+                {% } %}
+            </script>
+        {% endraw %}
+
+        <script type="text/javascript">
+            $(function () {
+                'use strict';
+
+				$('.form_wrapper').width('auto');
+				
+                // Initialize the jQuery File Upload widget:
+                $('#fileupload').fileupload({
+                    url: "{{ path('sip_multiple_upload', {}) }}"
+                });
+
+                // Enable iframe cross-domain access via redirect option:
+                $('#fileupload').fileupload(
+                        'option',
+                        {maxFileSize: {{ maxFileSize }},
+                            acceptFileTypes: /(\.|\/)({{ fileTypes|join('|') }})$/i,
+                            process: [{
+                                action: 'load',
+                                fileTypes: /^image\/({{ fileTypes|join('|') }})$/,
+                                maxFileSize: {{ maxFileSize }}
+                            }],
+                         maxNumberOfFiles: {{ maxNumberOfFiles }}},
+                        'redirect',
+                        window.location.href.replace(
+                                /\/[^\/]*$/,
+                                '/cors/result.html?%s'
+                        )
+                );
+                // Устанавливаем результирующее значение поля
+                $('#fileupload').bind('fileuploaddone',
+                    function (e, data) {
+                        {% if multiple %}
+                            var value = $('#{{ id }}').val();
+                            if (value != '') {
+                                value += ",";
+                            }
+                            value += '/{{ folder }}/' + data.result[0].name;
+                        {% else %}
+                            var value = '/{{ folder }}/' + data.result[0].name;
+                        {% endif %}
+
+                        $('#{{ id }}').val(value);
+                    });
+                // Изменяем результирующее значение поля при удалении файлов из списка
+                $('#fileupload').bind('fileuploaddestroyed',
+                    function (e, data) {                       
+                        var str = $('#{{ id }}').val();
+                        
+                        if (str) {
+                            var name = data.url.match(/file=([^&]+)/)[1];
+                           
+                            if (name) {
+                                str = str.replace(new RegExp('([^,]+|,{1}[^,]+)' + name.replace('\.', '\\.'), 'g'), '');                      
+                                str = str.replace(new RegExp('(^,)|(,$)', 'g'), '');
+                                $('#{{ id }}').val(str);
+                            }
+                        }
+                    });      
+                // Load existing files:
+                {% if loadHistory %}
+                    $.ajax({
+                        // Uncomment the following to send cross-domain cookies:
+                        //xhrFields: {withCredentials: true},
+                        url: $('#fileupload').fileupload('option', 'url'),
+                        dataType: 'json',
+                        context: $('#fileupload')[0]
+                    }).done(function (result) {
+                                if (result && result.length) {
+                                    $(this).fileupload('option', 'done')
+                                            .call(this, null, {result: result});
+                                }
+                    });
+                {% endif %}
+            });
+        </script>
+        {#<!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>#}
+        <script src="{{ asset('bundles/sipmultipleupload/js/vendor/jquery.ui.widget.js') }}"></script>
+        <script src="//blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script>
+        <script src="//blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
+        <script src="//blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        <script src="//blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
+        <script src="{{ asset('bundles/sipmultipleupload/js/jquery.iframe-transport.js') }}"></script>
+        <script src="{{ asset('bundles/sipmultipleupload/js/jquery.fileupload.js') }}"></script>
+        <script src="{{ asset('bundles/sipmultipleupload/js/jquery.fileupload-fp.js') }}"></script>
+        <script src="{{ asset('bundles/sipmultipleupload/js/jquery.fileupload-ui.js') }}"></script>
+    {% endspaceless %}
+{% endblock multiple_upload_file_javascript %}
