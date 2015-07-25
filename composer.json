@@ -3,7 +3,7 @@
     "type": "sip-bundle",
     "description": "Multiple Upload Bundle",
     "require": {
-        "genemu/form-bundle": "2.1.*"
+        "genemu/form-bundle": "*"
     },
     "autoload": {
         "psr-0": { "SIP\\MultipleUploadBundle": "" }
