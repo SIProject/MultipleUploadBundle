@@ -8,12 +8,10 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-use Genemu\Bundle\FormBundle\Form\Core\EventListener\FileListener;
 use Genemu\Bundle\FormBundle\Form\JQuery\DataTransformer\FileToValueTransformer;
+use SIP\MultipleUploadBundle\EventListener\FileListener;
 
 /**
  * multiple upload file type
