@@ -15,7 +15,6 @@
                     </td>
                     <td class="start">{% if (!o.options.autoUpload) { %}
                         <button class="btn btn-primary btn-sm btn-outline">
-                            <i class="icon-upload icon-white"></i>
                             <span>{% endraw %}{{'Start'|trans}}{% raw %}</span>
                         </button>
                         {% } %}</td>
@@ -24,7 +23,6 @@
                     {% } %}
                     <td class="cancel">{% if (!i) { %}
                         <button class="btn btn-warning btn-sm btn-outline">
-                            <i class="icon-ban-circle icon-white"></i>
                             <span>{% endraw %}{{'Cancel'|trans}}{% raw %}</span>
                         </button>
                         {% } %}</td>
@@ -52,8 +50,8 @@
                     {% } %}
                     <td class="delete">
                         <button class="btn btn-danger btn-sm btn-outline" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}"{% if (file.delete_with_credentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
-                        <i class="icon-trash icon-white"></i>
-                        <span>{% endraw %}{{'Delete files'|trans}}{% raw %}</span>
+                        <i class="fa fa-trash-o"></i>
+                        <span> {% endraw %}{{'Delete files'|trans}}{% raw %}</span>
                         </button>
                         <input type="checkbox" name="delete" value="1">
                     </td>
