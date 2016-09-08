@@ -1,3 +1,11 @@
+{% block form_javascript %}
+    {% spaceless %}
+        {% for child in form %}
+            {{ form_javascript(child) }}
+        {% endfor %}
+    {% endspaceless %}
+{% endblock form_javascript %}
+
 {% block multiple_upload_file_javascript %}
     {% spaceless %}
         {% raw %}
